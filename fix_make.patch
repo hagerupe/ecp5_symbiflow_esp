@@ -1,0 +1,40 @@
+From 808ef3a1a9c9ab8673c8334831630b3f4b2c7186 Mon Sep 17 00:00:00 2001
+From: root <root@u37b5d23162e85c.ant.amazon.com>
+Date: Mon, 17 Feb 2020 18:14:59 -0500
+Subject: [PATCH] Example makefile fixes
+
+---
+ examples/picorv32_versa5g/Makefile | 2 +-
+ examples/soc_versa5g/Makefile      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/examples/picorv32_versa5g/Makefile b/examples/picorv32_versa5g/Makefile
+index c259c04..18ad11a 100644
+--- a/examples/picorv32_versa5g/Makefile
++++ b/examples/picorv32_versa5g/Makefile
+@@ -13,7 +13,7 @@ attosoc_sim: attosoc_tb.vvp firmware.hex
+ 	vvp -N $<
+ 
+ attosoc.json: io_wrapper.v attosoc.v picorv32.v firmware.hex
+-	yosys -p "synth_ecp5 -nomux -json $@ -top top" io_wrapper.v attosoc.v picorv32.v
++	yosys -p "synth_ecp5 -abc9 -nomux -json $@ -top top" io_wrapper.v attosoc.v picorv32.v
+ 
+ attosoc_out.config: attosoc.json
+ 	nextpnr-ecp5 --json $< --textcfg $@ --um5g-45k --package CABGA381
+diff --git a/examples/soc_versa5g/Makefile b/examples/soc_versa5g/Makefile
+index 4f8c9e3..61b6d46 100644
+--- a/examples/soc_versa5g/Makefile
++++ b/examples/soc_versa5g/Makefile
+@@ -24,7 +24,7 @@ attosoc_out.config: attosoc.json versa.lpf
+ attosoc.bit: attosoc_out.config
+ 	ecppack --svf-rowsize 100000 --svf attosoc.svf $< $@
+ 
+-%.svf: %.bit
++attosoc.svf: attosoc.bit
+ 
+ prog: attosoc.svf
+ 	openocd -f ${TRELLIS}/misc/openocd/ecp5-versa5g.cfg -c "transport select jtag; init; svf $<; exit"
+-- 
+2.17.1
+
+
