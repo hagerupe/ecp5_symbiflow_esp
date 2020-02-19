@@ -182,6 +182,32 @@ WORKDIR /root/prjtrellis/examples/picorv32_versa5g
 RUN export PATH=$PATH:/opt/riscv/bin && make attosoc.svf
 WORKDIR /root/prjtrellis/examples/soc_versa5g
 RUN export PATH=$PATH:/opt/riscv/bin && make attosoc.svf
-
 WORKDIR "/root"
+
+# Chisel3 HDL
+RUN apt-get -y install default-jdk
+RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
+RUN apt-get update
+RUN apt-get -y install sbt
+RUN apt-get -y install git make autoconf g++ flex bison
+RUN git clone http://git.veripool.org/git/verilator
+WORKDIR /root/verilator
+RUN git pull
+# RUN git checkout verilator_4_016
+RUN unset VERILATOR_ROOT && autoconf && ./configure
+RUN make && make install
+WORKDIR "/root"
+
+# Sample Project Working Dir
+RUN mkdir /root/ChiselProjects
+WORKDIR /root/ChiselProjects
+RUN git clone https://github.com/ucb-bar/chisel-template.git MyChiselProject
+WORKDIR /root/ChiselProjects/MyChiselProject
+RUN rm -rf .git
+RUN git init
+RUN git add .gitignore *
+RUN git commit -m 'Starting MyChiselProject'
+RUN sbt 'testOnly gcd.GCDTester -- -z Basic'
+
 CMD ["/usr/local/bin/start"]
