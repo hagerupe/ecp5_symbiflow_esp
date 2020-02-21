@@ -200,14 +200,11 @@ RUN make && make install
 WORKDIR "/root"
 
 # Sample Project Working Dir
-RUN mkdir /root/ChiselProjects
-WORKDIR /root/ChiselProjects
-RUN git clone https://github.com/ucb-bar/chisel-template.git MyChiselProject
-WORKDIR /root/ChiselProjects/MyChiselProject
-RUN rm -rf .git
-RUN git init
-RUN git add .gitignore *
-RUN git commit -m 'Starting MyChiselProject'
+RUN mkdir Workspace
+WORKDIR /root/Workspace
+RUN git clone https://github.com/hagerupe/ecp5_rpc.git
+WORKDIR /root/Workspace/ecp5_rpc
 RUN sbt 'testOnly gcd.GCDTester -- -z Basic'
+# RUN make
 
 CMD ["/usr/local/bin/start"]
