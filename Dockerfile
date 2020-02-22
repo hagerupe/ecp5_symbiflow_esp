@@ -207,4 +207,6 @@ WORKDIR /root/Workspace/ecp5_rpc
 RUN sbt 'testOnly gcd.GCDTester -- -z Basic'
 # RUN make
 
+RUN apt-get -y install gtkwave
+
 CMD ["/usr/local/bin/start"]
